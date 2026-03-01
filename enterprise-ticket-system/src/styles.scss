@@ -1,0 +1,262 @@
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* PrimeNG icons */
+@import 'primeicons/primeicons.css';
+
+/* Global base styles */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #f8fafc;
+    color: #0f172a;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+/* PrimeNG overrides to match enterprise design */
+@layer components {
+  /* Table styling */
+  .p-datatable .p-datatable-header {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+  }
+
+  .p-datatable .p-datatable-thead > tr > th {
+    background: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-color: #e2e8f0;
+    padding: 0.75rem 1rem;
+  }
+
+  .p-datatable .p-datatable-tbody > tr > td {
+    border-color: #f1f5f9;
+    padding: 0.875rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .p-datatable .p-datatable-tbody > tr:hover {
+    background: #f8fafc;
+  }
+
+  /* Button overrides */
+  .p-button {
+    font-weight: 500;
+    border-radius: 0.5rem;
+  }
+
+  /* Input overrides */
+  .p-inputtext {
+    border-radius: 0.5rem;
+    border-color: #e2e8f0;
+    font-size: 0.875rem;
+  }
+
+  .p-inputtext:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  /* Dialog overrides */
+  .p-dialog {
+    border-radius: 0.75rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+
+  .p-dialog .p-dialog-header {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .p-dialog .p-dialog-content {
+    padding: 1.5rem;
+  }
+
+  .p-dialog .p-dialog-footer {
+    border-top: 1px solid #e2e8f0;
+    padding: 1rem 1.5rem;
+  }
+
+  /* Toast overrides */
+  .p-toast {
+    z-index: 9999;
+  }
+
+  /* Menu overrides */
+  .p-menu {
+    border-radius: 0.5rem;
+    border-color: #e2e8f0;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    min-width: 180px;
+  }
+
+  /* Tag overrides */
+  .p-tag {
+    border-radius: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  /* Router link active state */
+  .router-link-active {
+    background-color: #334155 !important;
+    color: white !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Mobile-Responsive Sidebar
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Desktop: sidebar wrapper stays in the normal flex row */
+.app-sidebar-wrapper {
+  display: flex;
+  flex-shrink: 0;
+  height: 100%;
+}
+
+/* Mobile (< 768px): sidebar becomes a fixed overlay */
+@media (max-width: 767px) {
+  .app-sidebar-wrapper {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .app-sidebar-wrapper.is-mobile-open {
+    transform: translateX(0);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Fix: PrimeNG .p-inputtext uses `padding` shorthand that overrides
+   Tailwind's single-side pl-* utilities. These targeted rules restore
+   correct left padding for search inputs with a left-side icon.
+   ───────────────────────────────────────────────────────────────────────── */
+.p-inputtext.pl-8  { padding-left: 2rem !important; }
+.p-inputtext.pl-9  { padding-left: 2.25rem !important; }
+.p-inputtext.pl-10 { padding-left: 2.5rem !important; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Mobile-Responsive: Global component overrides for small screens
+   ───────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+
+  /* DataTable — enable horizontal scrolling instead of clipping */
+  .p-datatable-wrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* DataTable cells — slightly tighter on mobile */
+  .p-datatable .p-datatable-thead > tr > th,
+  .p-datatable .p-datatable-tbody > tr > td {
+    padding: 0.625rem 0.75rem !important;
+    font-size: 0.8125rem !important;
+    white-space: nowrap;
+  }
+
+  /* Dialog — near full-width on mobile */
+  .p-dialog {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    margin: 0 auto !important;
+  }
+
+  .p-dialog .p-dialog-header {
+    padding: 1rem !important;
+  }
+
+  .p-dialog .p-dialog-content {
+    padding: 1rem !important;
+  }
+
+  .p-dialog .p-dialog-footer {
+    padding: 0.75rem 1rem !important;
+  }
+
+  /* Dropdown panel — prevent overflow beyond viewport */
+  .p-dropdown-panel,
+  .p-multiselect-panel {
+    max-width: 90vw;
+  }
+
+  /* Toast — full width near top on mobile */
+  .p-toast {
+    width: calc(100vw - 2rem) !important;
+    left: 1rem !important;
+    right: 1rem !important;
+  }
+
+  .p-toast .p-toast-message {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Utility animations */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.25s ease-out;
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

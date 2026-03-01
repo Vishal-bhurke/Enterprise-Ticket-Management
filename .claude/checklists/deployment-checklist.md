@@ -1,0 +1,3 @@
+# Deployment Checklist
+
+- Environment configured
