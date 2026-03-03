@@ -142,6 +142,17 @@ import { ToastService } from '../../../core/services/toast.service';
               <p class="text-slate-500 text-sm mt-1.5">Sign in to continue to your workspace</p>
             </div>
 
+            <!-- Session invalidated banner — shown when another device logged in -->
+            @if (sessionInvalidatedMessage()) {
+              <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-5 flex items-start gap-3">
+                <i class="pi pi-shield text-amber-600 mt-0.5 flex-shrink-0 text-base"></i>
+                <div>
+                  <p class="text-amber-800 text-sm font-semibold leading-snug">Session Ended</p>
+                  <p class="text-amber-700 text-sm mt-1 leading-relaxed">{{ sessionInvalidatedMessage() }}</p>
+                </div>
+              </div>
+            }
+
             <!-- Error banner -->
             @if (errorMessage()) {
               <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3">
@@ -254,6 +265,7 @@ export class LoginComponent implements OnInit {
   protected loginForm!: FormGroup;
   protected isLoading = signal(false);
   protected errorMessage = signal<string | null>(null);
+  protected sessionInvalidatedMessage = signal<string | null>(null);
 
   protected readonly features = [
     'Smart Ticket Management & Assignment',
@@ -268,6 +280,14 @@ export class LoginComponent implements OnInit {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/dashboard']);
       return;
+    }
+
+    const reason = this.route.snapshot.queryParams['reason'];
+    if (reason === 'session_invalidated') {
+      this.sessionInvalidatedMessage.set(
+        'Your session was ended because this account signed in from another device. ' +
+        'For security, only one active session is allowed at a time.'
+      );
     }
 
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';

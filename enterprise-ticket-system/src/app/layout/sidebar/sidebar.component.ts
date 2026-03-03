@@ -108,6 +108,12 @@ export class SidebarComponent {
 
   private navConfig: NavItem[] = [
     {
+      label: 'Overview',
+      icon: 'pi pi-th-large',
+      route: '/overview',
+      roles: ['super_admin'],
+    },
+    {
       label: 'Dashboard',
       icon: 'pi pi-home',
       route: '/dashboard',

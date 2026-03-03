@@ -67,6 +67,12 @@ export const routes: Routes = [
         path: 'profile',
         loadChildren: () => import('./features/profile/profile.routes').then(m => m.PROFILE_ROUTES),
       },
+      {
+        path: 'overview',
+        canActivate: [roleGuard(['super_admin'])],
+        loadComponent: () =>
+          import('./features/overview/overview.component').then(m => m.OverviewComponent),
+      },
     ],
   },
 
