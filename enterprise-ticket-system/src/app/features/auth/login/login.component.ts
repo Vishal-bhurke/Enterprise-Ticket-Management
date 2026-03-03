@@ -116,8 +116,12 @@ import { ToastService } from '../../../core/services/toast.service';
 
       <!-- ═══════════════════════════════════════
            RIGHT PANEL — form, vertically centered
+           overflow-y-auto + min-h-full inner wrapper ensures the card
+           never clips the top on small screens while staying centered
+           on large screens. py-8 guarantees breathing room top & bottom.
            ═══════════════════════════════════════ -->
-      <div class="flex-1 flex items-center justify-center bg-slate-50 p-6 sm:p-10">
+      <div class="flex-1 bg-slate-50 overflow-y-auto">
+        <div class="min-h-full flex items-center justify-center px-6 py-8 sm:px-10 sm:py-12">
         <div class="w-full max-w-[400px]">
 
           <!-- Card -->
@@ -229,10 +233,11 @@ import { ToastService } from '../../../core/services/toast.service';
           </div>
 
           <!-- Version below card -->
-          <p class="text-center text-xs text-slate-400 mt-5">
+          <p class="text-center text-xs text-slate-400 mt-5 mb-2">
             Enterprise Ticket System &nbsp;v1.0.0
           </p>
 
+        </div>
         </div>
       </div>
 
