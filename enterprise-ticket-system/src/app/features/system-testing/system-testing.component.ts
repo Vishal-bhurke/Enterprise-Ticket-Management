@@ -509,7 +509,7 @@ export class SystemTestingComponent implements OnInit {
   readonly error = signal<string | null>(null);
   readonly guideVisible = signal(false);
 
-  readonly latestRun = computed(() => this.runs()[0] ?? null);
+  readonly latestRun = computed((): TestRunLog | undefined => this.runs()[0]);
 
   // ── Static config ──────────────────────────────────────────────────────────
   readonly testCategories = [
