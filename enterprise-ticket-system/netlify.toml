@@ -1,6 +1,6 @@
 [build]
   publish = "dist/enterprise-ticket-system/browser"
-  command = "npm run build"
+  command = "npm install && npm run build"
 
 # Post-deploy test runner — fires after successful deployment, never blocks deploy
 [[plugins]]
