@@ -1,5 +1,5 @@
 [build]
-  command = "npm install && npm run build"
+  command = "npm ci --include=dev && npm run build"
   publish = "dist/enterprise-ticket-system/browser"
 
 # Post-deploy test runner — fires after successful deployment, never blocks deploy
