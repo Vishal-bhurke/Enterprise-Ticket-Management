@@ -6,7 +6,7 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 import { routes } from './app.routes';
-import { SUPABASE_CLIENT, createSupabaseClient } from './core/supabase/supabase.client';
+import { SUPABASE_CLIENT, createSupabaseClient, ADMIN_SUPABASE_CLIENT, createAdminSupabaseClient } from './core/supabase/supabase.client';
 import { AuthService } from './core/auth/auth.service';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
@@ -29,6 +29,7 @@ export const appConfig: ApplicationConfig = {
       ripple: true,
     }),
     { provide: SUPABASE_CLIENT, useFactory: createSupabaseClient },
+    { provide: ADMIN_SUPABASE_CLIENT, useFactory: createAdminSupabaseClient },
     MessageService,
     ConfirmationService,
     {

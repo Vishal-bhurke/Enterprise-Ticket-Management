@@ -109,7 +109,7 @@ export class TicketService extends SupabaseService {
             id, file_name, file_size, mime_type, storage_path, created_at,
             uploader:profiles!uploaded_by(id, full_name)
           ),
-          links:ticket_links(
+          links:ticket_links!source_id(
             id, link_type, target_id,
             target:tickets!target_id(id, ticket_number, title, status_id)
           ),
@@ -136,10 +136,25 @@ export class TicketService extends SupabaseService {
 
     try {
       const userId = await this.getCurrentUserId();
+
+      // Fetch the default status (Open) — required by tickets.status_id NOT NULL constraint.
+      // The seed data marks 'Open' as is_default = true.
+      const { data: defaultStatus, error: statusError } = await this.client
+        .from('statuses')
+        .select('id')
+        .eq('is_default', true)
+        .single();
+
+      if (statusError || !defaultStatus) {
+        this.toastService.error('System configuration error: no default status found. Contact your administrator.');
+        return this.handleError(new Error('No default status configured')) as ApiResponse<null>;
+      }
+
       const { data, error } = await this.client
         .from('tickets')
         .insert({
           ...payload,
+          status_id: (defaultStatus as { id: string }).id,
           requester_id: userId,
           created_by: userId,
         })

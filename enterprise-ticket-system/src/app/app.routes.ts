@@ -73,6 +73,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/overview/overview.component').then(m => m.OverviewComponent),
       },
+      {
+        path: 'system-testing',
+        canActivate: [roleGuard(['super_admin'])],
+        loadComponent: () =>
+          import('./features/system-testing/system-testing.component').then(m => m.SystemTestingComponent),
+      },
     ],
   },
 

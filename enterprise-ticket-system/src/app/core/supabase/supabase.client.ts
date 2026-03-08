@@ -13,3 +13,16 @@ export function createSupabaseClient(): SupabaseClient {
     },
   });
 }
+
+// Admin client — uses service role key, bypasses RLS.
+// Used ONLY for admin user management operations (creating auth users).
+export const ADMIN_SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('AdminSupabaseClient');
+
+export function createAdminSupabaseClient(): SupabaseClient {
+  return createClient(environment.supabase.url, environment.supabase.serviceKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+}

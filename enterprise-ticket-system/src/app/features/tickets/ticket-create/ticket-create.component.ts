@@ -148,7 +148,7 @@ import { CreateTicketDto } from '../../../shared/models/ticket.model';
                 placeholder="Select ticket type"
                 styleClass="w-full"
                 [class.ng-invalid]="isInvalid('ticket_type_id')"
-                (ngModelChange)="onTicketTypeChange($event)"
+                (onChange)="onTicketTypeChange($event.value)"
               />
               @if (isInvalid('ticket_type_id')) {
                 <p class="text-red-500 text-xs mt-1">Ticket type is required</p>

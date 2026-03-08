@@ -2,6 +2,13 @@
   publish = "dist/enterprise-ticket-system/browser"
   command = "npm run build"
 
+# Post-deploy test runner — fires after successful deployment, never blocks deploy
+[[plugins]]
+  package = "./netlify/plugins/run-tests"
+
+[context.production.environment]
+  NODE_ENV = "production"
+
 # SPA redirect — Angular handles all client-side routing
 # Without this, Netlify returns 404 for any direct URL or page refresh
 [[redirects]]

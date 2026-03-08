@@ -43,7 +43,44 @@ testem.log
 .env.local
 .env.development.local
 .env.production.local
+# Allow the example template (no real values)
+!.env.example
 
 # System files
 .DS_Store
 Thumbs.db
+
+# Playwright
+playwright-report/
+test-results/
+tests/.auth/
+/playwright/.cache/
+
+# Fix scripts (one-off migration helpers)
+fix-dialogs.js
+fix-dialogs2.js
+fix-masters.js
+fix-remaining.js
+
+# Netlify
+.netlify/
+
+# Angular cache
+.angular/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Coverage reports
+coverage/
+
+# TypeScript build info
+*.tsbuildinfo

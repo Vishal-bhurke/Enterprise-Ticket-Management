@@ -15,7 +15,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ToastService } from '../../../core/services/toast.service';
 import { AuthService } from '../../../core/auth/auth.service';
-import { SUPABASE_CLIENT } from '../../../core/supabase/supabase.client';
+import { SUPABASE_CLIENT, ADMIN_SUPABASE_CLIENT } from '../../../core/supabase/supabase.client';
 
 interface Role {
   id: string;
@@ -249,6 +249,7 @@ interface UserForm {
             optionValue="id"
             placeholder="Select role"
             [showClear]="true"
+            appendTo="body"
             class="w-full"
           />
         </div>
@@ -263,6 +264,7 @@ interface UserForm {
             optionValue="id"
             placeholder="Select department"
             [showClear]="true"
+            appendTo="body"
             class="w-full"
           />
         </div>
@@ -290,6 +292,7 @@ interface UserForm {
 })
 export class UserMasterComponent implements OnInit {
   private supabase = inject(SUPABASE_CLIENT);
+  private adminSupabase = inject(ADMIN_SUPABASE_CLIENT);
   private toastService = inject(ToastService);
   private confirmationService = inject(ConfirmationService);
   protected isAdmin = inject(AuthService).isAdmin;
@@ -418,9 +421,30 @@ export class UserMasterComponent implements OnInit {
         if (error) throw error;
         this.toastService.success('User updated successfully.');
       } else {
-        const { error } = await this.supabase.from('profiles').insert({ ...payload, email: this.form.email.trim() });
-        if (error) throw error;
-        this.toastService.success('User created successfully.');
+        // Step 1: Create the auth.users record via Admin API (requires service role key).
+        // Direct profiles INSERT is impossible — profiles.id is a FK to auth.users.id.
+        const { data: authData, error: authError } = await this.adminSupabase.auth.admin.createUser({
+          email: this.form.email.trim(),
+          email_confirm: true,           // Admin creates user directly — no email verification step
+          password: crypto.randomUUID(), // Cryptographically random temp password
+          user_metadata: { full_name: this.form.full_name.trim() },
+        });
+        if (authError) throw authError;
+
+        // Step 2: The `handle_new_user` DB trigger fires automatically after auth.users INSERT,
+        // creating a profiles row with role=end_user. Now UPDATE it with the form values.
+        const { error: profileError } = await this.adminSupabase
+          .from('profiles')
+          .update({
+            role_id: this.form.role_id,
+            department_id: this.form.department_id || null,
+            employee_id: this.form.employee_id?.trim() || null,
+            is_active: this.form.is_active,
+          })
+          .eq('id', authData.user.id);
+        if (profileError) throw profileError;
+
+        this.toastService.success('User created successfully. Ask them to use "Forgot Password" to set their password.');
       }
       this.closeDialog();
       await this.load();

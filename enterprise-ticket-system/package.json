@@ -6,7 +6,12 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report",
+    "test:all": "bash tests/run-full-test.sh",
+    "test:notify": "ts-node tests/notify-admin.ts"
   },
   "private": true,
   "dependencies": {
@@ -31,6 +36,7 @@
     "@angular-devkit/build-angular": "^18.2.21",
     "@angular/cli": "^18.2.21",
     "@angular/compiler-cli": "^18.2.0",
+    "@playwright/test": "^1.58.2",
     "@types/jasmine": "~5.1.0",
     "autoprefixer": "^10.4.27",
     "jasmine-core": "~5.2.0",
@@ -41,6 +47,7 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.19",
+    "ts-node": "^10.9.2",
     "typescript": "~5.5.2"
   }
 }

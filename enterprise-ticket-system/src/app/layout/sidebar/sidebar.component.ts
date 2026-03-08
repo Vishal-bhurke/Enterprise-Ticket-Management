@@ -114,6 +114,12 @@ export class SidebarComponent {
       roles: ['super_admin'],
     },
     {
+      label: 'System Testing',
+      icon: 'pi pi-verified',
+      route: '/system-testing',
+      roles: ['super_admin'],
+    },
+    {
       label: 'Dashboard',
       icon: 'pi pi-home',
       route: '/dashboard',
