@@ -1,7 +1,6 @@
 [build]
-  base = "enterprise-ticket-system"
-  command = "cd enterprise-ticket-system && npm install && npm run build"
-  publish = "enterprise-ticket-system/dist/enterprise-ticket-system/browser"
+  command = "npm install && npm run build"
+  publish = "dist/enterprise-ticket-system/browser"
 
 # Post-deploy test runner — fires after successful deployment, never blocks deploy
 [[plugins]]
