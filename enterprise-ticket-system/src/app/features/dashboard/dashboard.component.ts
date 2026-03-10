@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ChartModule } from 'primeng/chart';
@@ -243,7 +243,7 @@ import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
     }
   `,
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   private dashboardService = inject(DashboardService);
   private authService = inject(AuthService);
 
@@ -254,10 +254,13 @@ export class DashboardComponent implements OnInit {
   protected error = this.dashboardService.error;
   protected isAdmin = this.authService.isAdmin;
 
-  protected slaMet() {
+  private refreshInterval: ReturnType<typeof setInterval> | null = null;
+  private readonly REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+
+  protected readonly slaMet = computed(() => {
     const s = this.stats();
     return s.resolved + s.closed - s.sla_breached;
-  }
+  });
 
   protected lineChartOptions = {
     responsive: true,
@@ -276,18 +279,18 @@ export class DashboardComponent implements OnInit {
     cutout: '70%',
   };
 
-  protected trendChartData() {
-    const labels = this.trendData().map(d => {
+  protected readonly trendChartData = computed(() => {
+    const data = this.trendData();
+    const labels = data.map(d => {
       const date = new Date(d.date);
       return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
     });
-
     return {
       labels,
       datasets: [
         {
           label: 'Created',
-          data: this.trendData().map(d => d.created),
+          data: data.map(d => d.created),
           borderColor: '#3B82F6',
           backgroundColor: 'rgba(59,130,246,0.1)',
           fill: true,
@@ -296,7 +299,7 @@ export class DashboardComponent implements OnInit {
         },
         {
           label: 'Resolved',
-          data: this.trendData().map(d => d.resolved),
+          data: data.map(d => d.resolved),
           borderColor: '#10B981',
           backgroundColor: 'rgba(16,185,129,0.1)',
           fill: true,
@@ -305,9 +308,9 @@ export class DashboardComponent implements OnInit {
         },
       ],
     };
-  }
+  });
 
-  protected slaChartData() {
+  protected readonly slaChartData = computed(() => {
     const met = Math.max(0, this.slaMet());
     const breached = Math.max(0, this.stats().sla_breached);
     return {
@@ -317,10 +320,18 @@ export class DashboardComponent implements OnInit {
         borderWidth: 0,
       }],
     };
-  }
+  });
 
   ngOnInit(): void {
     this.loadDashboard();
+    this.refreshInterval = setInterval(() => this.loadDashboard(), this.REFRESH_INTERVAL_MS);
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+      this.refreshInterval = null;
+    }
   }
 
   loadDashboard(): void {

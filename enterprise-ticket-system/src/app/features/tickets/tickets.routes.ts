@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { roleGuard } from '../../core/auth/role.guard';
 
 export const TICKET_ROUTES: Routes = [
   {
@@ -9,6 +10,11 @@ export const TICKET_ROUTES: Routes = [
     path: 'my',
     loadComponent: () => import('./ticket-list/ticket-list.component').then(m => m.TicketListComponent),
     data: { myTickets: true },
+  },
+  {
+    path: 'board',
+    loadComponent: () => import('./ticket-board/ticket-board.component').then(m => m.TicketBoardComponent),
+    canActivate: [roleGuard(['super_admin', 'admin', 'agent'])],
   },
   {
     path: 'create',

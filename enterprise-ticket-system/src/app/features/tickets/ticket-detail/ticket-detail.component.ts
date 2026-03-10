@@ -262,14 +262,14 @@ import { ConfirmationService } from 'primeng/api';
               <!-- Status -->
               <div>
                 <label class="block text-xs font-medium text-surface-600 mb-2">Status</label>
-                @if (editMode() && canManage()) {
+                @if (canManage()) {
                   <p-dropdown
                     [options]="statusOptions()"
                     [(ngModel)]="editStatusId"
                     optionLabel="name"
                     optionValue="id"
                     styleClass="w-full"
-                    (ngModelChange)="updateField('status_id', $event)"
+                    (ngModelChange)="onStatusChange($event)"
                   />
                 } @else if (ticket()!.status) {
                   <app-status-badge [status]="ticket()!.status!" />
@@ -278,14 +278,14 @@ import { ConfirmationService } from 'primeng/api';
               <!-- Priority -->
               <div>
                 <label class="block text-xs font-medium text-surface-600 mb-2">Priority</label>
-                @if (editMode() && canManage()) {
+                @if (canManage()) {
                   <p-dropdown
                     [options]="priorityOptions()"
                     [(ngModel)]="editPriorityId"
                     optionLabel="name"
                     optionValue="id"
                     styleClass="w-full"
-                    (ngModelChange)="updateField('priority_id', $event)"
+                    (ngModelChange)="onPriorityChange($event)"
                   />
                 } @else if (ticket()!.priority) {
                   <app-priority-badge [priority]="ticket()!.priority!" />
@@ -538,6 +538,16 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     if (!t) return;
     await this.ticketService.updateTicket(t.id, { [field]: value });
     this.loadTicket(t.id);
+  }
+
+  protected onStatusChange(newId: string): void {
+    if (!this.ticket() || newId === this.ticket()!.status_id) return;
+    this.updateField('status_id', newId);
+  }
+
+  protected onPriorityChange(newId: string): void {
+    if (!this.ticket() || newId === this.ticket()!.priority_id) return;
+    this.updateField('priority_id', newId);
   }
 
   async postComment(): Promise<void> {

@@ -51,85 +51,89 @@ import { ConfirmationService } from 'primeng/api';
       [subtitle]="myTickets ? 'Tickets you created or are assigned to' : 'All tickets in the system'"
       [breadcrumbs]="['Home', 'Tickets', myTickets ? 'My Tickets' : 'All Tickets']"
     >
-      <p-button
-        label="Create Ticket"
-        icon="pi pi-plus"
-        routerLink="/tickets/create"
-        size="small"
-      />
+      <div class="flex items-center gap-2">
+        <!-- View toggle (board not available for end_user) -->
+        @if (canManageTickets()) {
+          <div class="flex items-center border border-surface-200 rounded-lg overflow-hidden">
+            <span class="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-primary-600 text-white font-medium">
+              <i class="pi pi-list text-sm"></i>
+              Table
+            </span>
+            <a
+              routerLink="/tickets/board"
+              class="flex items-center gap-1.5 px-3 py-1.5 text-sm text-surface-600 hover:bg-surface-100 font-medium transition-colors"
+            >
+              <i class="pi pi-th-large text-sm"></i>
+              Board
+            </a>
+          </div>
+        }
+        <p-button
+          label="Create Ticket"
+          icon="pi pi-plus"
+          routerLink="/tickets/create"
+          size="small"
+        />
+      </div>
     </app-page-header>
 
     <!-- Filter Bar -->
     <div class="bg-white rounded-xl border border-surface-200 p-4 mb-4">
-      <div class="flex flex-wrap gap-3 items-end">
+      <div class="flex items-center gap-3 flex-wrap">
         <!-- Search -->
-        <div class="flex-1 min-w-[200px]">
-          <label class="block text-xs font-medium text-surface-600 mb-1">Search</label>
-          <div class="relative">
-            <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 text-sm"></i>
-            <input
-              pInputText
-              type="text"
-              placeholder="Search by title or ticket number..."
-              [(ngModel)]="searchValue"
-              (ngModelChange)="onSearchChange($event)"
-              class="pl-9 w-full text-sm"
-            />
-          </div>
+        <div class="relative flex-1 min-w-[220px] max-w-sm">
+          <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 text-sm z-10"></i>
+          <input
+            pInputText
+            type="text"
+            placeholder="Search by title or ticket number..."
+            [(ngModel)]="searchValue"
+            (ngModelChange)="onSearchChange($event)"
+            class="pl-9 w-full text-sm"
+          />
         </div>
 
         <!-- Status Filter -->
-        <div class="min-w-[160px]">
-          <label class="block text-xs font-medium text-surface-600 mb-1">Status</label>
-          <p-dropdown
-            [options]="statusOptions"
-            [(ngModel)]="selectedStatusId"
-            optionLabel="name"
-            optionValue="id"
-            placeholder="All statuses"
-            [showClear]="true"
-            (ngModelChange)="applyFilters()"
-            styleClass="w-full text-sm"
-          />
-        </div>
+        <p-dropdown
+          [options]="statusOptions"
+          [(ngModel)]="selectedStatusId"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="All Statuses"
+          [showClear]="true"
+          (ngModelChange)="applyFilters()"
+          appendTo="body"
+        />
 
         <!-- Priority Filter -->
-        <div class="min-w-[160px]">
-          <label class="block text-xs font-medium text-surface-600 mb-1">Priority</label>
-          <p-dropdown
-            [options]="priorityOptions"
-            [(ngModel)]="selectedPriorityId"
-            optionLabel="name"
-            optionValue="id"
-            placeholder="All priorities"
-            [showClear]="true"
-            (ngModelChange)="applyFilters()"
-            styleClass="w-full text-sm"
-          />
-        </div>
+        <p-dropdown
+          [options]="priorityOptions"
+          [(ngModel)]="selectedPriorityId"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="All Priorities"
+          [showClear]="true"
+          (ngModelChange)="applyFilters()"
+          appendTo="body"
+        />
 
         <!-- Clear Filters -->
         @if (hasActiveFilters()) {
-          <div>
-            <label class="block text-xs font-medium text-surface-600 mb-1 opacity-0">Clear</label>
-            <p-button
-              label="Clear filters"
-              icon="pi pi-times"
-              severity="secondary"
-              size="small"
-              (onClick)="clearFilters()"
-            />
-          </div>
+          <button
+            type="button"
+            class="text-sm text-surface-500 hover:text-surface-700 flex items-center gap-1 underline"
+            (click)="clearFilters()"
+          >
+            <i class="pi pi-times text-xs"></i>
+            Clear filters
+          </button>
         }
-      </div>
 
-      @if (hasActiveFilters()) {
-        <div class="mt-2 pt-2 border-t border-surface-100 flex items-center gap-2 text-xs text-surface-500">
-          <i class="pi pi-filter text-primary-500"></i>
-          <span>Filters active —</span>
-          <span class="font-semibold text-surface-700">{{ totalCount() }} result{{ totalCount() !== 1 ? 's' : '' }}</span>
-        </div>
-      }
+        <!-- Ticket count -->
+        <span class="ml-auto text-sm text-surface-500">
+          {{ totalCount() }} ticket{{ totalCount() !== 1 ? 's' : '' }}
+        </span>
+      </div>
     </div>
 
     <!-- Error -->

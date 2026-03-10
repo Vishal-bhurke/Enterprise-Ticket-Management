@@ -130,6 +130,7 @@ export class SidebarComponent {
       children: [
         { label: 'All Tickets', icon: 'pi pi-list', route: '/tickets', roles: ['super_admin', 'admin', 'agent'] },
         { label: 'My Tickets', icon: 'pi pi-user', route: '/tickets/my' },
+        { label: 'Board', icon: 'pi pi-th-large', route: '/tickets/board', roles: ['super_admin', 'admin', 'agent'] },
         { label: 'Create Ticket', icon: 'pi pi-plus-circle', route: '/tickets/create' },
       ],
     },
